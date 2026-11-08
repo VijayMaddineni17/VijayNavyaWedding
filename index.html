@@ -297,7 +297,7 @@ return;
 }
 const chosen = EVENTS.filter(e => v.events.includes(e.id));
 $('#thanksTitle').textContent = 'Thank you, ' + v.name + '!';
-$('#thanksText').textContent = 'Your RSVP is in. Calendar invites are on their way to ' + v.email + ' and will land on your calendar, and we will send you friendly reminders as the day gets closer. You can also add them right now:';
+$('#thanksText').textContent = 'Your RSVP is in. A confirmation email with a calendar file is on its way to ' + v.email + ' (please check spam too). Open the file to add all the celebrations to your calendar, and we will send you friendly reminders as the day gets closer. You can also add them right now:';
 $('#calList').innerHTML =
 `<a class="btn" style="text-align:center;font-size:15px;padding:14px" download="Vijay-Navya-Wedding.ics" href="${icsHref(chosen)}">ADD ALL TO CALENDAR (.ics)</a>` +
 chosen.map(e => `<div class="cal-row"><div><b>${e.short}</b><span>${e.when}</span></div>
