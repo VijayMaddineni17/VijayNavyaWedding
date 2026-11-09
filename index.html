@@ -133,6 +133,18 @@ body{padding-top:54px}
 .cd .done{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--deep);padding:10px 0}
 .invite .ganesha-top{position:absolute;left:50%;top:19%;height:5.6cqw;width:auto;transform:translateX(-50%);z-index:2;pointer-events:none}
 .phrow{display:flex;gap:8px}.phrow select{flex:none;font:inherit;font-size:15px;color:var(--deep);background:#fffefb;border:1.5px solid #cfd3c8;border-radius:14px;padding:0 8px;cursor:pointer}.phrow input{min-width:0}
+.party{position:fixed;inset:0;z-index:200;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;overflow:hidden;animation:pfade .4s ease}
+.party .em{display:flex;gap:clamp(14px,4vw,28px);font-size:clamp(46px,11vw,76px);margin-bottom:24px;position:relative;z-index:1}
+.party .em span{display:inline-block;animation:pop 1.1s ease-in-out infinite}
+.party .em span:nth-child(2){animation-delay:.15s}.party .em span:nth-child(3){animation-delay:.3s}.party .em span:nth-child(4){animation-delay:.45s}
+@keyframes pop{0%,100%{transform:translateY(0) rotate(0) scale(1)}30%{transform:translateY(-24px) rotate(-12deg) scale(1.2)}60%{transform:translateY(0) rotate(10deg) scale(.95)}}
+.party h3{font-family:'Playfair Display',serif;font-size:clamp(30px,6vw,46px);color:var(--deep);margin:0 0 12px;position:relative;z-index:1}
+.party p{font-size:18px;color:#3d5a4f;max-width:520px;line-height:1.55;margin:0 0 28px;position:relative;z-index:1}
+.party button{position:relative;z-index:1;background:var(--deep);color:#fff;border:1px solid var(--gold);border-radius:99px;padding:14px 36px;font:700 14px 'DM Sans',sans-serif;letter-spacing:.14em;cursor:pointer}
+.party .bit{position:absolute;top:-50px;font-size:24px;animation:fall linear forwards;pointer-events:none}
+@keyframes fall{to{transform:translateY(115vh) rotate(540deg)}}
+@keyframes pfade{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.party .em span,.party .bit{animation:none}.party .bit{display:none}}
 </style>
 </head>
 <body>
@@ -291,7 +303,14 @@ err.textContent = 'Something went wrong sending your RSVP. Please try again.'; b
 }
 showThanks(v);
 });
+function celebrate(v){var yes=v.attending!=='no';var d=document.createElement('div');d.className='party';d.setAttribute('role','dialog');d.setAttribute('aria-live','polite');
+d.innerHTML=(yes?'<div class="em"><span>🎉</span><span>🎊</span><span>💥</span><span>🥳</span></div>':'<div class="em"><span>💛</span></div>')+'<h3>'+(yes?'RSVP Submitted!':'RSVP Received')+'</h3><p></p><button type="button">CONTINUE</button>';
+d.querySelector('p').textContent=yes?('Thank you, '+v.name+'! We are so excited to see you at the celebrations.'):('Thank you for letting us know, '+v.name+'. We will miss you!');
+document.body.appendChild(d);document.body.style.overflow='hidden';
+if(yes){var em=['🎉','🎊','✨','🥳','💥'];for(var i=0;i<40;i++){var b=document.createElement('span');b.className='bit';b.textContent=em[i%em.length];b.style.left=(Math.random()*100)+'%';b.style.animationDuration=(2.5+Math.random()*2.5)+'s';b.style.animationDelay=(Math.random()*2)+'s';d.appendChild(b)}}
+var btn=d.querySelector('button');btn.onclick=function(){d.remove();document.body.style.overflow='';document.getElementById('rsvp').scrollIntoView()};btn.focus();}
 function showThanks(v){
+celebrate(v);
 $('#form').classList.add('hide'); $('#thanks').classList.remove('hide');
 if (v.attending === 'no'){
 $('#thanksTitle').textContent = 'We will miss you!';
