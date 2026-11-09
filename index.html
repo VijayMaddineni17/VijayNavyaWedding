@@ -132,6 +132,7 @@ body{padding-top:54px}
 .cd .u span{font-size:10px;letter-spacing:.14em;color:#5d7268;text-transform:uppercase}
 .cd .done{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--deep);padding:10px 0}
 .invite .ganesha-top{position:absolute;left:50%;top:19%;height:5.6cqw;width:auto;transform:translateX(-50%);z-index:2;pointer-events:none}
+.phrow{display:flex;gap:8px}.phrow select{flex:none;font:inherit;font-size:15px;color:var(--deep);background:#fffefb;border:1.5px solid #cfd3c8;border-radius:14px;padding:0 8px;cursor:pointer}.phrow input{min-width:0}
 </style>
 </head>
 <body>
@@ -164,7 +165,8 @@ body{padding-top:54px}
 <div class="grid2">
 <div><label for="name">Guest / Family Name *</label><input id="name" type="text" autocomplete="name"></div>
 <div><label for="email">Email Address *</label><input id="email" type="email" autocomplete="email"></div>
-<div><label for="phone">Phone Number *</label><input id="phone" type="tel" autocomplete="tel"></div>
+<div><label for="phone">Phone Number *</label><div class="phrow"><select id="cc" aria-label="Country code"><option data-code="+1" value="US" selected>🇺🇸 +1</option><option data-code="+1" value="CA">🇨🇦 +1</option><option data-code="+91" value="IN">🇮🇳 +91</option><option data-code="+44" value="GB">🇬🇧 +44</option><option data-code="+61" value="AU">🇦🇺 +61</option><option data-code="+971" value="AE">🇦🇪 +971</option></select><input id="phone" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="602-813-8227"></div></div>
+<script>(function(){var ph=document.getElementById("phone"),cc=document.getElementById("cc");function us(){return cc.selectedOptions[0].dataset.code==="+1"}function fmt(){var d=ph.value.replace(/\D/g,"");if(us()){if(d.length===11&&d[0]==="1")d=d.slice(1);d=d.slice(0,10);ph.value=d.length>6?d.slice(0,3)+"-"+d.slice(3,6)+"-"+d.slice(6):d.length>3?d.slice(0,3)+"-"+d.slice(3):d}else{ph.value=d.slice(0,15)}}ph.addEventListener("input",fmt);cc.addEventListener("change",function(){ph.placeholder=us()?"602-813-8227":"Phone number";fmt()})})()</script>
 <div><label for="guests">Number of Guests Attending *</label><input id="guests" type="number" min="1" max="20" value="1"></div>
 </div>
         <div id="eventsBlock">
@@ -260,7 +262,7 @@ $('#form').addEventListener('submit', async ev => {
 ev.preventDefault();
 const err = $('#err'); err.textContent = '';
 const v = {
-name: $('#name').value.trim(), email: $('#email').value.trim(), phone: $('#phone').value.trim(),
+name: $('#name').value.trim(), email: $('#email').value.trim(), phone: ($('#phone').value.trim() ? $('#cc').selectedOptions[0].dataset.code + ' ' + $('#phone').value.trim() : ''),
 guests: parseInt($('#guests').value,10) || 0, note: $('#note').value.trim(),
 responses: {},
 };
@@ -272,6 +274,7 @@ if (!v.name || !v.phone || !v.email || v.guests < 1){
 err.textContent = 'Please complete the required details before sending your RSVP.'; return;
 }
 if (!/^\S+@\S+\.\S+$/.test(v.email)){ err.textContent = 'Please enter a valid email so we can send your calendar invites.'; return; }
+{ const pd = $('#phone').value.replace(/\D/g,''), isUS = $('#cc').selectedOptions[0].dataset.code === '+1'; if (isUS ? pd.length !== 10 : (pd.length < 6 || pd.length > 15)){ err.textContent = isUS ? 'Please enter a 10-digit phone number, like 602-813-8227.' : 'Please enter a valid phone number.'; return; } }
 if (EVENTS.some(e => !v.responses[e.id])){ err.textContent = 'Please choose Yes or No for each celebration.'; return; }
 const hosted = typeof google !== 'undefined' && google.script && google.script.run;
 if (!hosted && SCRIPT_URL.startsWith('PASTE_')){ err.textContent = 'RSVP backend is not connected yet.'; return; }
