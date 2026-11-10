@@ -260,9 +260,6 @@ textarea{min-height:84px;resize:vertical}
 <div class="content">
 <p class="caps rv">Counting down to the wedding</p>
 <div class="cd rv d1" id="cd"><div><b id="cdD">--</b><span>DAYS</span></div><div><b id="cdH">--</b><span>HOURS</span></div><div><b id="cdM">--</b><span>MINS</span></div><div><b id="cdS">--</b><span>SECS</span></div></div>
-<div class="orn rv d2"><b>&#10086;</b></div>
-<p class="caps rv d2">Attendance</p>
-<div class="att rv d3"><div><b id="nYes">–</b><span>ATTENDING</span></div><div><b id="nNo">–</b><span>NOT ATTENDING</span></div></div>
 <button class="pill solid rv d4" style="margin-top:26px" onclick="openSheet('rsvp')">RSVP NOW</button>
 </div>
 </section>
@@ -381,12 +378,6 @@ setInterval(() => { if (!$('#gate')) document.querySelectorAll('.rv:not(.in)').f
 
 // countdown
 (function(){ const T=Date.UTC(2026,11,23,16,21,0); function t(){ const d=T-Date.now(); if(d<=0){ $('#cd').outerHTML='<p class="script" style="font-size:40px;margin:12px 0">Today is the day!</p>'; return true; } const s=Math.floor(d/1000); $('#cdD').textContent=Math.floor(s/86400); $('#cdH').textContent=pad(Math.floor(s%86400/3600)); $('#cdM').textContent=pad(Math.floor(s%3600/60)); $('#cdS').textContent=pad(s%60); } if(!t()) { const iv=setInterval(()=>{ if(t()) clearInterval(iv); },1000); } })();
-
-// attendance counts (from the same backend; hidden if unavailable)
-fetch(SCRIPT_URL + '?stats=1', {credentials:'omit'}).then(r => r.json()).then(j => {
-  if (j && typeof j.attendingGuests === 'number') { $('#nYes').textContent = j.attendingGuests; $('#nNo').textContent = j.notAttending; }
-  else { $('.att').style.display='none'; document.querySelectorAll('#count .caps')[1].style.display='none'; }
-}).catch(() => { $('.att').style.display='none'; document.querySelectorAll('#count .caps')[1].style.display='none'; });
 
 // sheets
 function openSheet(id){ closeSheets(true); $('#sheet-'+id).classList.add('on'); $('#scrim').classList.add('on'); }
