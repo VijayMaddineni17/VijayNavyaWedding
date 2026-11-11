@@ -361,7 +361,7 @@ $('#calRows').innerHTML = EVENTS.map(e => `<div class="row"><div><b>${esc(e.shor
 (function(){ const seen={},rows=[]; EVENTS.forEach(e=>{ if(seen[e.venue]) seen[e.venue].n.push(e.short); else { seen[e.venue]={n:[e.short],v:e.venue}; rows.push(seen[e.venue]); } });
 $('#locRows').innerHTML = rows.map(r => `<a class="row" style="text-decoration:none" href="${mapUrl(r.v)}" target="_blank" rel="noopener"><div><b>${esc(r.n.join(', '))}</b><small>${esc(r.v)}</small></div><span class="pill solid" style="pointer-events:none">${PIN}MAP</span></a>`).join(''); })();
 // RSVP event rows
-$('#eventChecks').innerHTML = EVENTS.map(e => `<div class="evrow"><div><b>${esc(e.short)}</b><small>${esc(e.when)}${e.dress?' · Dress code: '+esc(e.dress):''}${e.note?' · 🧥 Bring a jacket':''}</small></div><div class="yn"><label><input type="radio" name="att_${e.id}" value="yes"><span>Yes</span></label><label><input type="radio" name="att_${e.id}" value="no"><span>No</span></label></div></div>`).join('');
+$('#eventChecks').innerHTML = EVENTS.map(e => `<div class="evrow"><div><b>${esc(e.short)}</b><small>${esc(e.when)}${e.dress?' · Dress code: '+esc(e.dress):''}${e.note?' · Please arrive by 8:15 AM · 🧥 Bring a jacket':''}</small></div><div class="yn"><label><input type="radio" name="att_${e.id}" value="yes"><span>Yes</span></label><label><input type="radio" name="att_${e.id}" value="no"><span>No</span></label></div></div>`).join('');
 // gifts
 $('#giftSel').addEventListener('change', function(){ $('#giftBtn').href = this.value; });
 function goGifts(){ closeSheets(); $('#gifts').scrollIntoView({behavior:'smooth'}); }
