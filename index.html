@@ -226,7 +226,7 @@ date:'2026-12-22', start:'10:30', end:'13:30', when:'Tue, Dec 22 · 10:30 AM',
 venue:'5931 County Rd 471, McKinney, TX 75071', desc:'Haldi celebration. Dress code: Yellow.', dress:'Yellow' },
 { id:'wedding', title:'Wedding — Vijay & Navya', short:'Wedding',
 date:'2026-12-23', start:'10:00', end:'14:00', when:'Wed, Dec 23 · Muhurtham 10:21 AM',
-venue:'4253 County Rd 412, McKinney, TX 75071', desc:'Wedding ceremony. Muhurtham at 10:21 AM, followed by lunch.' },
+venue:'4253 County Rd 412, McKinney, TX 75071', desc:'Wedding ceremony. Muhurtham at 10:21 AM, followed by lunch. Please bring a jacket.', note:'Bring a jacket! The wedding is in the morning. On Dec 23 at 10 AM it was 56°F in 2024 and 68°F in 2025, but December mornings in McKinney can dip into the 30s.' },
 ];
 const $ = s => document.querySelector(s);
 const mapUrl = e => 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(e.venue);
@@ -237,11 +237,11 @@ clk:'<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><ci
 pin:'<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.8-6.1-6.8-11.2a6.8 6.8 0 0 1 13.6 0C18.8 14.9 12 21 12 21z"/><circle cx="12" cy="9.8" r="2.4"/></svg>'};
 $('#inviteEvents').innerHTML = EVENTS.map(e => {
 const p = e.when.split(' \u00b7 '), loc = e.venue.includes('County Rd') ? e.venue.split(',')[0] : e.venue;
-return `<li><p class="ev-name">${e.short}${e.dress?` <span style="font-size:.72em;font-style:italic;color:#8a6a1a">· Dress code: ${e.dress}</span>`:''}</p><div class="ev-grid"><div class="c">${IC.cal}<div><b>Date</b><span>${p[0]}</span></div></div><div class="c">${IC.clk}<div><b>Time</b><span>${p[1]}</span></div></div><a class="c" href="${mapUrl(e)}" target="_blank" rel="noopener">${IC.pin}<div><b>Location</b><span>${loc}</span></div></a></div></li>`;
+return `<li><p class="ev-name">${e.short}${e.dress?` <span style="font-size:.72em;font-style:italic;color:#8a6a1a">· Dress code: ${e.dress}</span>`:''}${e.note?` <span style="font-size:.72em;font-style:italic;color:#8a6a1a">· 🧥 Bring a jacket</span>`:''}</p><div class="ev-grid"><div class="c">${IC.cal}<div><b>Date</b><span>${p[0]}</span></div></div><div class="c">${IC.clk}<div><b>Time</b><span>${p[1]}</span></div></div><a class="c" href="${mapUrl(e)}" target="_blank" rel="noopener">${IC.pin}<div><b>Location</b><span>${loc}</span></div></a></div></li>`;
 }).join('');
 // event checkboxes on page 2
 $('#eventChecks').innerHTML = EVENTS.map(e =>
-`<div class="evrow"><div><b>${e.short}</b><small>${e.when}${e.dress?' &middot; Dress code: '+e.dress:''} &middot; <a href="${mapUrl(e)}" target="_blank" rel="noopener">\uD83D\uDCCD Map</a></small></div><div class="att"><em>Attending</em><label><input type="radio" name="att_${e.id}" value="yes"><span>Yes</span></label><label><input type="radio" name="att_${e.id}" value="no"><span>No</span></label></div></div>`
+`<div class="evrow"><div><b>${e.short}</b><small>${e.when}${e.dress?' &middot; Dress code: '+e.dress:''} &middot; <a href="${mapUrl(e)}" target="_blank" rel="noopener">\uD83D\uDCCD Map</a>${e.note?'<br>🧥 '+e.note:''}</small></div><div class="att"><em>Attending</em><label><input type="radio" name="att_${e.id}" value="yes"><span>Yes</span></label><label><input type="radio" name="att_${e.id}" value="no"><span>No</span></label></div></div>`
 ).join('');
 // venue list beside the RSVP form
 (function(){

@@ -162,6 +162,7 @@ textarea{min-height:84px;resize:vertical}
 @keyframes petal{to{transform:translate(var(--dx),110vh) rotate(720deg)}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}.petal,.party .bit{display:none}}
 .ev .dress{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:4px 12px;border-radius:99px;background:#fff6d6;border:1px solid #f0d36b;font-size:12px;color:#7a5a00;letter-spacing:.04em}.ev .dress i{width:10px;height:10px;border-radius:50%;background:#f5c518}
+.ev .wx{margin:12px auto 0;max-width:340px;padding:10px 12px;border-radius:12px;background:#eef3f7;border:1px solid #cfdbe5;font-size:12px;line-height:1.55;color:#3b4d5c}
 </style>
 </head>
 <body class="locked">
@@ -339,7 +340,7 @@ const EVENTS = [
 { id:'pelli', title:'Pelli Koduku & Pelli Kuthuru', short:'Pelli Koduku & Pelli Kuthuru', day:'Sunday', dnum:'20 | 12 | 2026', date:'2026-12-20', start:'15:00', end:'19:00', time:'3:00 PM & 5:00 PM', when:'Sun, Dec 20 · 3:00 PM & 5:00 PM', venue:'5931 County Rd 471, McKinney, TX 75071', desc:'Pelli Koduku (3 PM) and Pelli Kuthuru (5 PM).' },
 { id:'mehendi', title:'Mehendi', short:'Mehendi', day:'Monday', dnum:'21 | 12 | 2026', date:'2026-12-21', start:'17:00', end:'21:00', time:'5:00 PM', when:'Mon, Dec 21 · 5:00 PM', venue:'5931 County Rd 471, McKinney, TX 75071', desc:'Mehendi celebration.' },
 { id:'haldi', title:'Haldi', short:'Haldi', day:'Tuesday', dnum:'22 | 12 | 2026', date:'2026-12-22', start:'10:30', end:'13:30', time:'10:30 AM', when:'Tue, Dec 22 · 10:30 AM', venue:'5931 County Rd 471, McKinney, TX 75071', desc:'Haldi celebration. Dress code: Yellow.', dress:'Yellow' },
-{ id:'wedding', title:'Wedding — Vijay & Navya', short:'Wedding', day:'Wednesday', dnum:'23 | 12 | 2026', date:'2026-12-23', start:'10:00', end:'14:00', time:'Muhurtham 10:21 AM', when:'Wed, Dec 23 · Muhurtham 10:21 AM', venue:'4253 County Rd 412, McKinney, TX 75071', desc:'Wedding ceremony. Muhurtham at 10:21 AM, followed by lunch.' },
+{ id:'wedding', title:'Wedding — Vijay & Navya', short:'Wedding', day:'Wednesday', dnum:'23 | 12 | 2026', date:'2026-12-23', start:'10:00', end:'14:00', time:'Muhurtham 10:21 AM', when:'Wed, Dec 23 · Muhurtham 10:21 AM', venue:'4253 County Rd 412, McKinney, TX 75071', desc:'Wedding ceremony. Muhurtham at 10:21 AM, followed by lunch. Please bring a jacket.', note:'Bring a jacket! The wedding is in the morning. On Dec 23 at 10 AM it was 56°F in 2024 and 68°F in 2025, but December mornings in McKinney can dip into the 30s.' },
 ];
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -352,7 +353,7 @@ const icsHref = list => 'data:text/calendar;charset=utf-8,' + encodeURIComponent
 const PIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-6.8-6.1-6.8-11.2a6.8 6.8 0 0 1 13.6 0C18.8 14.9 12 21 12 21z"/><circle cx="12" cy="9.8" r="2.4"/></svg>';
 
 // event cards
-$('#evList').innerHTML = EVENTS.map((e,i) => `<div class="ev rv d${(i%2)+1}"><h3 class="script">${esc(e.short)}</h3><div class="day">${e.day.toUpperCase()}</div><div class="dt">${e.dnum}</div><div class="tm">${esc(e.time)}</div>${e.dress?`<div class="dress"><i></i>Dress code: <b>${esc(e.dress)}</b></div>`:''}<div class="vn">${esc(e.venue)}</div><a class="pill" href="${mapUrl(e.venue)}" target="_blank" rel="noopener">${PIN}MAP</a><a class="pill" href="${googleLink(e)}" target="_blank" rel="noopener">+ CALENDAR</a><button class="pill solid" onclick="openSheet('rsvp')">RSVP</button></div>`).join('');
+$('#evList').innerHTML = EVENTS.map((e,i) => `<div class="ev rv d${(i%2)+1}"><h3 class="script">${esc(e.short)}</h3><div class="day">${e.day.toUpperCase()}</div><div class="dt">${e.dnum}</div><div class="tm">${esc(e.time)}</div>${e.dress?`<div class="dress"><i></i>Dress code: <b>${esc(e.dress)}</b></div>`:''}${e.note?`<div class="wx">🧥 ${esc(e.note)}</div>`:''}<div class="vn">${esc(e.venue)}</div><a class="pill" href="${mapUrl(e.venue)}" target="_blank" rel="noopener">${PIN}MAP</a><a class="pill" href="${googleLink(e)}" target="_blank" rel="noopener">+ CALENDAR</a><button class="pill solid" onclick="openSheet('rsvp')">RSVP</button></div>`).join('');
 // calendar sheet
 $('#icsAll').href = icsHref(EVENTS);
 $('#calRows').innerHTML = EVENTS.map(e => `<div class="row"><div><b>${esc(e.short)}</b><small>${esc(e.when)}</small></div><div class="acts"><a href="${googleLink(e)}" target="_blank" rel="noopener">Google</a><a download="${e.id}.ics" href="${icsHref([e])}">Apple / Outlook</a></div></div>`).join('');
@@ -360,7 +361,7 @@ $('#calRows').innerHTML = EVENTS.map(e => `<div class="row"><div><b>${esc(e.shor
 (function(){ const seen={},rows=[]; EVENTS.forEach(e=>{ if(seen[e.venue]) seen[e.venue].n.push(e.short); else { seen[e.venue]={n:[e.short],v:e.venue}; rows.push(seen[e.venue]); } });
 $('#locRows').innerHTML = rows.map(r => `<a class="row" style="text-decoration:none" href="${mapUrl(r.v)}" target="_blank" rel="noopener"><div><b>${esc(r.n.join(', '))}</b><small>${esc(r.v)}</small></div><span class="pill solid" style="pointer-events:none">${PIN}MAP</span></a>`).join(''); })();
 // RSVP event rows
-$('#eventChecks').innerHTML = EVENTS.map(e => `<div class="evrow"><div><b>${esc(e.short)}</b><small>${esc(e.when)}${e.dress?' · Dress code: '+esc(e.dress):''}</small></div><div class="yn"><label><input type="radio" name="att_${e.id}" value="yes"><span>Yes</span></label><label><input type="radio" name="att_${e.id}" value="no"><span>No</span></label></div></div>`).join('');
+$('#eventChecks').innerHTML = EVENTS.map(e => `<div class="evrow"><div><b>${esc(e.short)}</b><small>${esc(e.when)}${e.dress?' · Dress code: '+esc(e.dress):''}${e.note?' · 🧥 Bring a jacket':''}</small></div><div class="yn"><label><input type="radio" name="att_${e.id}" value="yes"><span>Yes</span></label><label><input type="radio" name="att_${e.id}" value="no"><span>No</span></label></div></div>`).join('');
 // gifts
 $('#giftSel').addEventListener('change', function(){ $('#giftBtn').href = this.value; });
 function goGifts(){ closeSheets(); $('#gifts').scrollIntoView({behavior:'smooth'}); }
