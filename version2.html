@@ -292,11 +292,11 @@ textarea{min-height:84px;resize:vertical}
 
 <!-- bottom navigation -->
 <nav class="nav" aria-label="Invitation menu">
-<button onclick="openSheet('cal')"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>CALENDAR</button>
+<button class="hl" onclick="openSheet('rsvp')"><svg viewBox="0 0 24 24"><path d="M12 20.5s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.9c0 5.4-7.5 10-7.5 10z"/></svg>RSVP</button>
 <button onclick="openSheet('loc')"><svg viewBox="0 0 24 24"><path d="M12 21s-6.8-6.1-6.8-11.2a6.8 6.8 0 0 1 13.6 0C18.8 14.9 12 21 12 21z"/><circle cx="12" cy="9.8" r="2.4"/></svg>LOCATION</button>
+<button onclick="openSheet('cal')"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>CALENDAR</button>
 <button onclick="goGifts()"><svg viewBox="0 0 24 24"><rect x="3.5" y="9" width="17" height="11.5" rx="1.5"/><path d="M2.5 9h19v-3h-19zM12 6v14.5M12 6c-1.5-3-6-3.5-6-.8C6 6 9 6 12 6zm0 0c1.5-3 6-3.5 6-.8C18 6 15 6 12 6z"/></svg>GIFTS</button>
 <button onclick="openSheet('contact')"><svg viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="m4 7 8 6 8-6"/></svg>CONTACT</button>
-<button class="hl" onclick="openSheet('rsvp')"><svg viewBox="0 0 24 24"><path d="M12 20.5s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.9c0 5.4-7.5 10-7.5 10z"/></svg>RSVP</button>
 </nav>
 
 <div class="scrim" id="scrim" onclick="closeSheets()"></div>
@@ -311,8 +311,8 @@ textarea{min-height:84px;resize:vertical}
 
 <div class="sheet" id="sheet-contact" role="dialog" aria-label="Contact"><div class="grab"></div><button class="x" onclick="closeSheets()" aria-label="Close">&times;</button>
 <h3>Contact Us</h3><p class="p" style="font-size:17px">Questions about the celebrations? We would love to hear from you.</p>
-<a class="pill solid" href="mailto:vijay.maddineni17@gmail.com">EMAIL VIJAY</a>
-<p style="font-size:12px;color:var(--muted);margin-top:10px">vijay.maddineni17@gmail.com</p></div>
+<a class="pill solid" href="tel:+16028138227">CALL VIJAY</a><a class="pill" href="mailto:vijay.maddineni17@gmail.com">EMAIL VIJAY</a>
+<p style="font-size:13px;color:var(--muted);margin-top:12px;line-height:1.8"><a href="tel:+16028138227" style="color:var(--wine);font-weight:600;text-decoration:none">+1 602-813-8227</a><br>vijay.maddineni17@gmail.com</p></div>
 
 <div class="sheet" id="sheet-rsvp" role="dialog" aria-label="RSVP"><div class="grab"></div><button class="x" onclick="closeSheets()" aria-label="Close">&times;</button>
 <h3>RSVP</h3><p class="caps" style="margin:0 0 4px">Kindly reply</p>
@@ -351,7 +351,7 @@ const icsHref = list => 'data:text/calendar;charset=utf-8,' + encodeURIComponent
 const PIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-6.8-6.1-6.8-11.2a6.8 6.8 0 0 1 13.6 0C18.8 14.9 12 21 12 21z"/><circle cx="12" cy="9.8" r="2.4"/></svg>';
 
 // event cards
-$('#evList').innerHTML = EVENTS.map((e,i) => `<div class="ev rv d${(i%2)+1}"><h3 class="script">${esc(e.short)}</h3><div class="day">${e.day.toUpperCase()}</div><div class="dt">${e.dnum}</div><div class="tm">${esc(e.time)}</div><div class="vn">${esc(e.venue)}</div><a class="pill" href="${mapUrl(e.venue)}" target="_blank" rel="noopener">${PIN}MAP</a><a class="pill" href="${googleLink(e)}" target="_blank" rel="noopener">+ CALENDAR</a></div>`).join('');
+$('#evList').innerHTML = EVENTS.map((e,i) => `<div class="ev rv d${(i%2)+1}"><h3 class="script">${esc(e.short)}</h3><div class="day">${e.day.toUpperCase()}</div><div class="dt">${e.dnum}</div><div class="tm">${esc(e.time)}</div><div class="vn">${esc(e.venue)}</div><a class="pill" href="${mapUrl(e.venue)}" target="_blank" rel="noopener">${PIN}MAP</a><a class="pill" href="${googleLink(e)}" target="_blank" rel="noopener">+ CALENDAR</a><button class="pill solid" onclick="openSheet('rsvp')">RSVP</button></div>`).join('');
 // calendar sheet
 $('#icsAll').href = icsHref(EVENTS);
 $('#calRows').innerHTML = EVENTS.map(e => `<div class="row"><div><b>${esc(e.short)}</b><small>${esc(e.when)}</small></div><div class="acts"><a href="${googleLink(e)}" target="_blank" rel="noopener">Google</a><a download="${e.id}.ics" href="${icsHref([e])}">Apple / Outlook</a></div></div>`).join('');
