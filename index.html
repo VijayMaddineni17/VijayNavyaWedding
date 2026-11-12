@@ -163,6 +163,10 @@ textarea{min-height:84px;resize:vertical}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}.petal,.party .bit{display:none}}
 .ev .dress{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:4px 12px;border-radius:99px;background:#fff6d6;border:1px solid #f0d36b;font-size:12px;color:#7a5a00;letter-spacing:.04em}.ev .dress i{width:10px;height:10px;border-radius:50%;background:#f5c518}
 .ev .wx{margin:12px auto 0;max-width:340px;padding:10px 12px;border-radius:12px;background:#eef3f7;border:1px solid #cfdbe5;font-size:12px;line-height:1.55;color:#3b4d5c}
+.gpop{position:fixed;inset:0;z-index:150;background:rgba(40,8,16,.5);display:flex;align-items:center;justify-content:center;padding:24px;animation:pfade .3s ease}
+.gcard{background:var(--paper);border-radius:22px;max-width:360px;width:100%;padding:26px 22px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3);animation:pop1 .35s ease}
+.gcard p{font-family:'Cormorant Garamond',serif;font-size:19px;line-height:1.5;color:var(--ink);margin:0 0 18px}
+@keyframes pop1{from{transform:scale(.9);opacity:0}to{transform:none;opacity:1}}
 </style>
 </head>
 <body class="locked">
@@ -323,7 +327,7 @@ textarea{min-height:84px;resize:vertical}
 <label for="email">Email Address *</label><input id="email" type="email" autocomplete="email">
 <label for="phone">Phone Number *</label>
 <div class="phrow"><select id="cc" class="cc" aria-label="Country code"><option data-code="+1" value="US" selected>🇺🇸 +1</option><option data-code="+1" value="CA">🇨🇦 +1</option><option data-code="+91" value="IN">🇮🇳 +91</option><option data-code="+44" value="GB">🇬🇧 +44</option><option data-code="+61" value="AU">🇦🇺 +61</option><option data-code="+971" value="AE">🇦🇪 +971</option></select><input id="phone" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="000-000-0000"></div>
-<label for="guests">Number of Guests Attending *</label><input id="guests" type="number" min="1" max="20" value="1">
+<label for="guests">Number of Guests Attending * <span style="font-weight:500;color:var(--muted)">(up to 5 per RSVP)</span></label><input id="guests" type="number" min="1" max="5" value="1">
 <p class="q">Will you be joining us for each celebration? *</p>
 <div id="eventChecks"></div>
 <label for="note">Leave a note for Vijay &amp; Navya</label><textarea id="note"></textarea>
@@ -391,6 +395,12 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSheets(
 function fmt(){ let d=ph.value.replace(/\D/g,''); if(us()){ if(d.length===11&&d[0]==='1') d=d.slice(1); d=d.slice(0,10); ph.value=d.length>6?d.slice(0,3)+'-'+d.slice(3,6)+'-'+d.slice(6):d.length>3?d.slice(0,3)+'-'+d.slice(3):d; } else ph.value=d.slice(0,15); }
 ph.addEventListener('input',fmt); cc.addEventListener('change',()=>{ ph.placeholder=us()?'000-000-0000':'Phone number'; fmt(); }); })();
 
+// more than 5 guests: friendly popup asking for another RSVP
+function guestPop(){ if (document.querySelector('.gpop')) return; const d=document.createElement('div'); d.className='gpop'; d.setAttribute('role','dialog'); d.setAttribute('aria-live','polite');
+d.innerHTML='<div class="gcard"><div class="script" style="font-size:42px;line-height:1.1;margin:0 0 8px">Just a little note</div><p>Each RSVP can include up to <b>5 guests</b>. If more of your family or friends are joining us, kindly submit another RSVP for the rest of your group. Thank you so much! 💛</p><button type="button" class="pill solid">OK, GOT IT</button></div>';
+document.body.appendChild(d); const b=d.querySelector('button'); b.onclick=()=>{ d.remove(); $('#guests').focus(); }; d.addEventListener('click',e=>{ if(e.target===d) d.remove(); }); b.focus(); }
+$('#guests').addEventListener('input', () => { if ((parseInt($('#guests').value,10)||0) > 5){ $('#guests').value = 5; guestPop(); } });
+
 // celebration screen
 function celebrate(v){ const yes=v.attending!=='no'; const d=document.createElement('div'); d.className='party'; d.setAttribute('role','dialog'); d.setAttribute('aria-live','polite');
 d.innerHTML=(yes?'<div class="em"><span>🎉</span><span>🎊</span><span>💥</span><span>🥳</span></div>':'<div class="em"><span>💛</span></div>')+'<h3>'+(yes?'RSVP Submitted!':'RSVP Received')+'</h3><p></p><button type="button">CONTINUE</button>';
@@ -408,6 +418,7 @@ $('#form').addEventListener('submit', async ev => {
   v.events = EVENTS.filter(e => v.responses[e.id]==='yes').map(e => e.id);
   v.attending = v.events.length ? 'yes' : 'no';
   if (!v.name || !v.phone || !v.email || v.guests < 1){ err.textContent='Please complete the required details before sending your RSVP.'; return; }
+  if (v.guests > 5){ guestPop(); return; }
   if (!/^\S+@\S+\.\S+$/.test(v.email)){ err.textContent='Please enter a valid email so we can send your calendar invites.'; return; }
   { const pd=raw.replace(/\D/g,''), isUS=$('#cc').selectedOptions[0].dataset.code==='+1'; if (isUS ? pd.length!==10 : (pd.length<6||pd.length>15)){ err.textContent = isUS ? 'Please enter a 10-digit phone number, like 602-813-8227.' : 'Please enter a valid phone number.'; return; } }
   if (EVENTS.some(e => !v.responses[e.id])){ err.textContent='Please choose Yes or No for each celebration.'; return; }
