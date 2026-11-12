@@ -327,7 +327,7 @@ textarea{min-height:84px;resize:vertical}
 <label for="email">Email Address *</label><input id="email" type="email" autocomplete="email">
 <label for="phone">Phone Number *</label>
 <div class="phrow"><select id="cc" class="cc" aria-label="Country code"><option data-code="+1" value="US" selected>🇺🇸 +1</option><option data-code="+1" value="CA">🇨🇦 +1</option><option data-code="+91" value="IN">🇮🇳 +91</option><option data-code="+44" value="GB">🇬🇧 +44</option><option data-code="+61" value="AU">🇦🇺 +61</option><option data-code="+971" value="AE">🇦🇪 +971</option></select><input id="phone" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="000-000-0000"></div>
-<label for="guests">Number of Guests Attending * <span style="font-weight:500;color:var(--muted)">(up to 5 per RSVP)</span></label><input id="guests" type="number" min="1" max="5" value="1">
+<label for="guests">Number of Guests Attending * <span style="font-weight:500;color:var(--muted)">(up to 10 per RSVP)</span></label><input id="guests" type="number" min="1" max="10" value="1">
 <p class="q">Will you be joining us for each celebration? *</p>
 <div id="eventChecks"></div>
 <label for="note">Leave a note for Vijay &amp; Navya</label><textarea id="note"></textarea>
@@ -395,11 +395,11 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSheets(
 function fmt(){ let d=ph.value.replace(/\D/g,''); if(us()){ if(d.length===11&&d[0]==='1') d=d.slice(1); d=d.slice(0,10); ph.value=d.length>6?d.slice(0,3)+'-'+d.slice(3,6)+'-'+d.slice(6):d.length>3?d.slice(0,3)+'-'+d.slice(3):d; } else ph.value=d.slice(0,15); }
 ph.addEventListener('input',fmt); cc.addEventListener('change',()=>{ ph.placeholder=us()?'000-000-0000':'Phone number'; fmt(); }); })();
 
-// more than 5 guests: friendly popup asking for another RSVP
+// more than 10 guests: friendly popup asking for another RSVP
 function guestPop(){ if (document.querySelector('.gpop')) return; const d=document.createElement('div'); d.className='gpop'; d.setAttribute('role','dialog'); d.setAttribute('aria-live','polite');
-d.innerHTML='<div class="gcard"><div class="script" style="font-size:42px;line-height:1.1;margin:0 0 8px">Just a little note</div><p>Each RSVP can include up to <b>5 guests</b>. If more of your family or friends are joining us, kindly submit another RSVP for the rest of your group. Thank you so much! 💛</p><button type="button" class="pill solid">OK, GOT IT</button></div>';
+d.innerHTML='<div class="gcard"><div class="script" style="font-size:42px;line-height:1.1;margin:0 0 8px">Just a little note</div><p>Each RSVP can include up to <b>10 guests</b>. If more of your family or friends are joining us, kindly submit another RSVP for the rest of your group. Thank you so much! 💛</p><button type="button" class="pill solid">OK, GOT IT</button></div>';
 document.body.appendChild(d); const b=d.querySelector('button'); b.onclick=()=>{ d.remove(); $('#guests').focus(); }; d.addEventListener('click',e=>{ if(e.target===d) d.remove(); }); b.focus(); }
-$('#guests').addEventListener('input', () => { if ((parseInt($('#guests').value,10)||0) > 5){ $('#guests').value = 5; guestPop(); } });
+$('#guests').addEventListener('input', () => { if ((parseInt($('#guests').value,10)||0) > 10){ $('#guests').value = 10; guestPop(); } });
 
 // celebration screen
 function celebrate(v){ const yes=v.attending!=='no'; const d=document.createElement('div'); d.className='party'; d.setAttribute('role','dialog'); d.setAttribute('aria-live','polite');
@@ -418,7 +418,7 @@ $('#form').addEventListener('submit', async ev => {
   v.events = EVENTS.filter(e => v.responses[e.id]==='yes').map(e => e.id);
   v.attending = v.events.length ? 'yes' : 'no';
   if (!v.name || !v.phone || !v.email || v.guests < 1){ err.textContent='Please complete the required details before sending your RSVP.'; return; }
-  if (v.guests > 5){ guestPop(); return; }
+  if (v.guests > 10){ guestPop(); return; }
   if (!/^\S+@\S+\.\S+$/.test(v.email)){ err.textContent='Please enter a valid email so we can send your calendar invites.'; return; }
   { const pd=raw.replace(/\D/g,''), isUS=$('#cc').selectedOptions[0].dataset.code==='+1'; if (isUS ? pd.length!==10 : (pd.length<6||pd.length>15)){ err.textContent = isUS ? 'Please enter a 10-digit phone number, like 602-813-8227.' : 'Please enter a valid phone number.'; return; } }
   if (EVENTS.some(e => !v.responses[e.id])){ err.textContent='Please choose Yes or No for each celebration.'; return; }
